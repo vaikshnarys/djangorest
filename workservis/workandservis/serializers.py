@@ -12,33 +12,63 @@ from .models import Workservis
 #         self.description = description
 
 class WorkservisSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
+
         model = Workservis
         fields = "__all__"
+
         #fields = ['kind','title','description','price','create_at','update_at','is_published','cat']
 
-# class WorkservisSerializer(serializers.Serializer):
-#
-#     kind = serializers.CharField(max_length=10,default='DRAFT')
-#     title = serializers.CharField(max_length=200)
-#     description = serializers.CharField()
-#     price = serializers.FloatField()
-#     create_at = serializers.DateTimeField(read_only=True)
-#     update_at = serializers.DateTimeField(read_only=True)
-#     is_published = serializers.BooleanField(default=True)
-#     cat_id = serializers.IntegerField()
+class CreateWorkservisSerializerOleg(serializers.Serializer):
+
+    title = serializers.CharField(max_length=200)
+    description = serializers.CharField()
+    price = serializers.FloatField()
 
     def create(self, validated_data):
-        return Workservis.objects.create(**validated_data)
+        return Workservis(**validated_data)
 
+class UserSerializerOleg(serializers.Serializer):
+    username = serializers.CharField()
+    is_staff = serializers.BooleanField()
+
+class CommentsSerializerOleg(serializers.Serializer):
+    working_servis_id = serializers.IntegerField()
+    text = serializers.CharField()
+class WorkservisSerializerOleg(serializers.Serializer):
+
+    title = serializers.CharField(max_length=200)
+    description = serializers.CharField()
+    price = serializers.FloatField()
+    kind = serializers.CharField()
+    user = UserSerializerOleg(many = False)
+    comments = CommentsSerializerOleg(many=True)
+    def create(self, validated_data):
+        return super().create(**validated_data)
     def update(self, instance, validated_data):
-        instance.title = validated_data.get('title', instance.title)
-        instance.description = validated_data.get('description', instance.description)
-        instance.price = validated_data.get('price', instance.price)
-        instance.update_at = validated_data.get('update_at', instance.update_at)
-        instance.cat_id = validated_data.get('cat_id', instance.cat)
+        for attr, value in validated_data.items():
+            setattr(instance,attr,value)
         instance.save()
         return instance
+
+class RetrieveWorkservisSerializerOleg(serializers.Serializer):
+    kind = serializers.CharField(max_length=10, default='DRAFT')
+    title = serializers.CharField(max_length=200)
+    description = serializers.CharField()
+    price = serializers.FloatField()
+
+
+
+    #
+    # def update(self, instance, validated_data):
+    #     instance.title = validated_data.get('title', instance.title)
+    #     instance.description = validated_data.get('description', instance.description)
+    #     instance.price = validated_data.get('price', instance.price)
+    #     instance.update_at = validated_data.get('update_at', instance.update_at)
+    #     instance.cat_id = validated_data.get('cat_id', instance.cat)
+    #     instance.save()
+    #     return instance
 
 # def encode():
 #     model = WorkservisModel('Washing machine', 'Content : Karcher')

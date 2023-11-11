@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Workservis,Category
+from .models import Workservis,Category,Comments
 
 
 @admin.register(Workservis)
@@ -18,3 +18,7 @@ class WorkservisAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     fields = ['name']
+
+@admin.register(Comments)
+class CommentsAdmin(admin.ModelAdmin):
+    fields = ['working_servis','text']

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 class Workservis(models.Model):
@@ -18,7 +19,7 @@ class Workservis(models.Model):
     update_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
     cat = models.ForeignKey('Category', on_delete=models.PROTECT, null = True)
-
+    user = models.ForeignKey(User,verbose_name='User', on_delete=models.CASCADE)
     def __str__(self):
         return self.title
 
@@ -27,3 +28,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+class Comments(models.Model):
+    working_servis = models.ForeignKey(Workservis,null = True, on_delete=models.CASCADE,related_name='comments')
+    text = models.TextField(max_length=200)

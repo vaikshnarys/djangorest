@@ -15,19 +15,30 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
-from workandservis.views import WorkservisAPIView, WorkservisListAPI, WorkservisUpdateAPI, WorkservisCRUDAPI
+from workandservis.views import WorkservisListAPI, WorkservisUpdateAPI, WorkservisCRUDAPI, WorkservisViewSet, \
+    DetailedWorkservisView
 
+# from rest_framework import routers
+#
+# router = routers.SimpleRouter()
+# router.register(r'workservis',WorkservisViewSet,basename='workservis')
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('api/v1/workservislist/',WorkservisAPIView.as_view()),
-    path('api/v1/workservislistview/',WorkservisListAPI.as_view()),
+    path('api/v1/workservis/',WorkservisViewSet.as_view()),
+    path('api/v1/workservis/<int:work_service_id>/',DetailedWorkservisView.as_view()),
 
-    path('api/v1/workservislist/<int:pk>/',WorkservisAPIView.as_view()),
-    path('api/v1/workservislistview/<int:pk>/',WorkservisUpdateAPI.as_view()),
+    path('api/v1/drf_auth/', include('rest_framework.urls')),
 
-    path('api/v1/workservisdetail/<int:pk>/', WorkservisCRUDAPI.as_view()),
+    path('api/v1/workservislist/',WorkservisListAPI.as_view()),
+    # path('api/v1/workservislistview/',WorkservisListAPI.as_view()),
+    #
+    path('api/v1/workservislist/<int:pk>/',WorkservisUpdateAPI.as_view()),
+    path('api/v1/workservislistdelete/<int:pk>/',WorkservisCRUDAPI.as_view()),
+    #
+    # path('api/v1/workservisdetail/<int:pk>/', WorkservisCRUDAPI.as_view()),
+    #path('api/v1/', include(router.urls)),
 
 ]
