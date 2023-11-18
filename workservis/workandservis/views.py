@@ -1,9 +1,10 @@
 from django.forms import model_to_dict
 from rest_framework import generics, viewsets
 from django.shortcuts import render
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import filters
@@ -40,10 +41,11 @@ class WorkservisListAPI(generics.ListCreateAPIView):
     serializer_class = WorkservisSerializer
     permission_classes = ( IsAuthenticatedOrReadOnly,)
 
-class WorkservisUpdateAPI(generics.UpdateAPIView):
+class WorkservisUpdateAPI(generics.RetrieveUpdateAPIView):
     queryset = Workservis.objects.all()
     serializer_class = WorkservisSerializer
-    permission_classes = (IsOwnerOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
+    #authentication_classes = (TokenAuthentication,)
 
 class WorkservisCRUDAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = Workservis.objects.all()
